@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SocketService } from './socket.service';
+import { SocketService } from '../app/socket.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,9 +7,35 @@ import { SocketService } from './socket.service';
 })
 export class AppComponent implements OnInit {
   title = 'angular';
-  constructor( private socketService: SocketService ){}
+  message = '';
+  msgList = [];
+  userOnline:Number = 0;
+  constructor(public socketservice: SocketService) { }
 
-  ngOnInit(){
-    this.socketService.connectSocket();
+  ngOnInit() {
+    this.getMessage();
+    this.getOnUser();
+  }
+
+  getMessage(){
+    this.socketservice.getMessage().subscribe((message) => {
+      console.log(message);
+      this.msgList.push(message);
+    })
+  }
+
+  getOnUser(){
+    this.userOnline = this.socketservice.getOnUser().subscribe((res)=>{
+      console.log(res + ' user online');
+      this.userOnline = res as Number;
+    });
+  }
+
+  sendMessage() {
+    if(this.message.length == 0)
+      return;
+    
+    this.socketservice.sendMessage(this.message);
+    this.message = '';
   }
 }

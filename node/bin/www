@@ -7,7 +7,6 @@
 var app = require('../app');
 var debug = require('debug')('node:server');
 var http = require('http');
-const { RequestHeaderFieldsTooLarge } = require('http-errors');
 
 /**
  * Get port from environment and store in Express.
@@ -21,7 +20,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-var io = require('socket.io')(server);
+const io = require('socket.io')(server);
 require('../socket/base')(io);
 
 /**
